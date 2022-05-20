@@ -7,6 +7,7 @@ import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
 import requests
+from config import ACCESS_TOKEN_KEY
 
 from io import StringIO
 
@@ -126,7 +127,7 @@ def readlastline(f):        # https://stackoverflow.com/questions/3346430/what-i
 # *******************************************************************
 
 def getWetterComTemperature():
-  resp =requests.get('http://api.openweathermap.org/data/2.5/weather?id=2935022&appid=5d40e7076a25e348c110e83155a77454')
+  resp =requests.get(ACCESS_TOKEN_KEY) # for security reasons load from config.py
   jsn = resp.json()
   k = jsn['main']['temp']
   c = KelvinToCelsius(k)
@@ -178,6 +179,9 @@ def generateimggraph():
     if(temp <= -1):
       data['x'][index] =-1;
       temp_1 = -1;
+    if(temp >= 50):
+      data['x'][index] =-1
+      temp_1 = -1
 
 
   for index, y in enumerate(data['y']):
@@ -205,9 +209,9 @@ def generateimggraph():
   ax1.set_ylabel('value')
 
   ax1.plot(x_, data['x']*10, color='r', label='temp')
-  ax1.plot(x_, data['y'], color='g', label='light 1' )
-  ax1.plot(x_, data['z'], color='b', label='light 2' )
-  ax1.plot(x_, data['a']/20, color='y', label='soil' )
+  ax1.plot(x_, data['y'], color='y', label='light 1' )
+  ax1.plot(x_, data['z'], color='g', label='light 2' )
+  ax1.plot(x_, data['a']/20, color='b', label='soil' )
   plt.savefig("/home/ha123blix/mysite/history/graph.png")
 
 
